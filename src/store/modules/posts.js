@@ -1,40 +1,19 @@
-// import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import axios from "axios";
+// import { v4 as uuidv4 } from "uuid";
+import env from "../../../env.js";
+
 const state = {
-  posts: [
-    {
-      id: uuidv4(),
-      title: "1.Post",
-      content: "My first post",
-      color: "#41b883",
-    },
-    {
-      id: uuidv4(),
-      title: "2.Post",
-      content: "My second post",
-      color: "#41b883",
-    },
-    {
-      id: uuidv4(),
-      title: "3.Post",
-      content: "My third post",
-      color: "#41b883",
-    },
-    {
-      id: uuidv4(),
-      title: "4.Post",
-      content: "My fourth post",
-      color: "#41b883",
-    },
-  ],
+  posts: [],
   updatePostButtonClicked: false,
   postShowedOnForm: { id: "", title: "", content: "" },
+  csrftoken: "",
 };
 
 const getters = {
   getPosts: (state) => state.posts,
   updatePostButtonClicked: (state) => state.updatePostButtonClicked,
   getPostShowedOnForm: (state) => state.postShowedOnForm,
+  getCSRFToken: (state) => state.csrftoken,
 };
 
 const actions = {
@@ -59,13 +38,31 @@ const actions = {
   updateColor: ({ commit }, post_id) => {
     commit("updateColor", post_id);
   },
+  setPosts: ({ commit }, posts) => {
+    commit("setPosts", posts);
+  },
+  setCSRFToken: ({ commit }, csrftoken) => {
+    commit("setCSRFToken", csrftoken);
+  },
 };
 
 const mutations = {
   addPost: (state, post) => {
-    state.posts.unshift(post);
+    let formData = new FormData();
+    formData.append("title", post.title);
+    formData.append("content", post.content);
+    axios
+      .post(`${env.DB_URL}/store_post`, {
+        title: post.title,
+        content: post.content,
+      })
+      .then((res) => {
+        state.posts.unshift(res.data.data);
+      })
+      .catch((error) => console.log(error));
   },
-  removePost: (state, post_id) => {
+  removePost: async (state, post_id) => {
+    await axios.delete(`${env.DB_URL}/delete_post/${post_id}`);
     const posts = state.posts.filter((post) => post.id !== post_id);
     state.posts = [...posts];
   },
@@ -75,14 +72,30 @@ const mutations = {
   updateButton: (state) => {
     state.updatePostButtonClicked = true;
   },
-  updatePostShowedOnForm: (state, post) => {
+  updatePostShowedOnForm: async (state, post) => {
     state.postShowedOnForm = {
       id: post.id,
       title: post.title,
       content: post.content,
     };
   },
-  updatePost: (state, oldPost) => {
+  updatePost: async (state, oldPost) => {
+    try {
+      // axios.defaults.headers.common["X-CSRF-TOKEN"] = state.csrftoken;
+      // axios.defaults.headers.post["anti-csrf-token"] = state.csrftoken;
+      // axios.defaults.headers.put["csrf-token"] = state.csrftoken;
+      console.log("in updatePost " + state.csrftoken);
+      await axios.put(`${env.DB_URL}/update_post/${oldPost.id}`, oldPost, {
+        // headers: { "X-CSRF-TOKEN": state.csrftoken },
+        headers: {
+          // "X-Requested-With": "XMLHttpRequest",
+          "X-XSRF-TOKEN": "U0i3ZWcHw1EyDdsBZUjF5WKRNz3VM83uPoso44X1",
+        },
+      });
+    } catch (error) {
+      console.log("in error of  updatePost " + state.csrftoken);
+    }
+
     state.posts = state.posts.map((post) => {
       if (post.id == oldPost.id) {
         post.id = oldPost.id;
@@ -104,6 +117,12 @@ const mutations = {
         return post;
       }
     });
+  },
+  setPosts: (state, posts) => {
+    state.posts = posts;
+  },
+  setCSRFToken: (state, csrftoken) => {
+    state.csrftoken = csrftoken;
   },
 };
 

@@ -38,7 +38,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
+
 export default {
   name: "addPost",
   data() {
@@ -101,13 +102,12 @@ export default {
         );
         return;
       }
-      console.log("Length " + contenttext.length);
       const post = {
         title: e.target[0].value,
         content: contenttext,
       };
       if (this.sendValue == "Add post") {
-        post.id = uuidv4();
+        // post.id = uuidv4();
         this.addPost(post);
       } else {
         post.id = this.getPostShowedOnForm.id;

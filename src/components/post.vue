@@ -34,13 +34,16 @@ export default {
     },
     postboxActivated() {
       if (this.removePostClicked == false) {
-        const post = { id: this.id, title: this.title, content: this.content };
+        const post = {
+          id: this.id,
+          title: this.title,
+          content: this.content,
+          color: this.color,
+        };
 
         if (this.updatePostButtonClicked == true) {
           this.updatePostShowedOnForm(post);
           this.updateColor(post.id);
-
-          // this.$alert("The view will be updated");
         }
       }
       this.removePostClicked = false;
@@ -64,6 +67,7 @@ export default {
   position: absolute;
   right: 0;
   bottom: 0;
+  color: rgb(83, 12, 12);
 }
 pre {
   word-wrap: break-word; /* IE 5.5-7 */

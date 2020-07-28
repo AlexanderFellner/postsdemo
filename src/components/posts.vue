@@ -31,7 +31,7 @@ export default {
       const res = await axios.get(`${env.DB_URL}/posts`);
       // console.log(res.config);
       const csrf = Cookies.get("XSRF-TOKEN");
-      console.log("csrf in get" + csrf);
+      // console.log("csrf in get" + csrf);
       this.setCSRFToken(csrf);
 
       const posts = [];
@@ -42,8 +42,8 @@ export default {
       this.setPosts(posts);
       axios.interceptors.request.use(async (request) => {
         try {
-          const csrf = Cookies.get("XSRF-TOKEN");
-          console.log("csrf " + csrf);
+          Cookies.get("XSRF-TOKEN");
+          // console.log("csrf " + csrf);
           // this.setCSRFToken(csrf);
           /*  request.withCredentials = true;
 

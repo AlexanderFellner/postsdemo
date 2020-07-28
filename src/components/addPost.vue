@@ -67,12 +67,7 @@ export default {
         for (let i = 0; i < text.length; i++) {
           if (i % numberCharsPerLine == 0) {
             if (i + numberCharsPerLine < text.length) {
-              //   console.log("i ist " + i);
-
-              //   console.log("j ist " + j);
               const str1 = text.substr(i, numberCharsPerLine);
-              //   console.log(str1);
-              //   console.log(str1.length);
               const str2 = str1 + "\n";
               contenttext += str2;
             } else {
@@ -107,7 +102,6 @@ export default {
         content: contenttext,
       };
       if (this.sendValue == "Add post") {
-        // post.id = uuidv4();
         this.addPost(post);
       } else {
         post.id = this.getPostShowedOnForm.id;
@@ -143,9 +137,6 @@ export default {
   display: flex;
   width: 100%;
   justify-content: flex-start;
-}
-#addupdatebox label {
-  flex: 10;
 }
 #addupdatebox button {
   /* margin-bottom: 10px; */

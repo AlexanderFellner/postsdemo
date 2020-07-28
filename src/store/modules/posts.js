@@ -84,7 +84,6 @@ const mutations = {
       // axios.defaults.headers.common["X-CSRF-TOKEN"] = state.csrftoken;
       // axios.defaults.headers.post["anti-csrf-token"] = state.csrftoken;
       // axios.defaults.headers.put["csrf-token"] = state.csrftoken;
-      console.log("in updatePost " + state.csrftoken);
       await axios.put(`${env.DB_URL}/update_post/${oldPost.id}`, oldPost, {
         // headers: { "X-CSRF-TOKEN": state.csrftoken },
         headers: {
